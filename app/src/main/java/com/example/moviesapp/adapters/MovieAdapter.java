@@ -34,7 +34,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public static final String NOW_PLAYING_URL = "https://api.themoviedb.org/3/movie/popular";
     public static final String API_KEY = "04387a9831174fd21d2ca3db9bdd8ca6";
     private RequestQueue mQueue; // Request queue for API requests
-    private int page = 1; // Initially load page 1 of API response
+    private int page = 1, limit = 1000; // Initially load page 1 of API response
 
     Context context; // Context to inflate the views - where the adapter is being constructed from
     List<Movie> movies = new ArrayList<>(); // List of movies the adapter needs to hold on to
@@ -42,7 +42,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public MovieAdapter(Context context) {
         this.context = context;
         mQueue = Volley.newRequestQueue(context); // Instantiate the RequestQueue
-        getMovies(page); // Initialize movies
+        getMovies(); // Initialize movies
     }
 
     @NonNull
@@ -68,7 +68,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return movies.size(); // The number of items is the number of movies in the list
     }
 
-    private void getMovies(int page) {
+    public void getMovies() {
+        if(page >= limit) return; // Page should be within the limit
         String url = String.format("%s?api_key=%s&page=%d", NOW_PLAYING_URL, API_KEY, page);
         // Request a JSON object response from the API URL
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -98,7 +99,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
 
         mQueue.add(jsonObjectRequest); // Add the request to the RequestQueue
+        page++; // Increment page for next API call
     }
+
 
 
     // Inner view holder class - representation of row in recycler view
