@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/movie_poster"
         android:layout_width="wrap_content"
-        android:layout_height="120dp"
+        android:layout_height="200dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/movie_poster"
-        android:textSize="24sp"
+        android:textSize="28sp"
         tools:text="Jungle Cruise" />
 
     <TextView
@@ -27,5 +27,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/movie_poster"
+        android:maxLines="8"
+        android:ellipsize="end"
         tools:text="Dr. Lily Houghton enlists the aid of wisecracking skipper Frank Wolff to take her down the Amazon in his dilapidated boat. Together, they search for an ancient tree that holds the power to heal – a discovery that will change the future of medicine." />
 </RelativeLayout>
