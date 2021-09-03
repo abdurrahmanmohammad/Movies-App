@@ -11,6 +11,7 @@ public class Movie {
     private String base_url = "https://image.tmdb.org/t/p";
     private String size = "w342";
     private String poster_path;
+    private String backdrop_path;
     private String title;
     private String overview;
 
@@ -18,6 +19,7 @@ public class Movie {
         // Set variables from passed in objects
         // If fields do not exist in JSON object, throw an exception - caller should deal with the thrown exception
         poster_path = String.format("%s/%s/%s", base_url, size, jsonObject.getString("poster_path"));
+        backdrop_path = String.format("%s/%s/%s", base_url, size, jsonObject.getString("backdrop_path"));
         title = jsonObject.getString("title");
         overview = jsonObject.getString("overview");
     }
@@ -33,7 +35,11 @@ public class Movie {
 
     // ******************** Getters ********************
     public String getPosterPath() {
-        return String.format("https://image.tmdb.org/t/p/%s/%s", size, poster_path);
+        return poster_path;
+    }
+
+    public String getBackdrop_path() {
+        return backdrop_path;
     }
 
     public String getTitle() {

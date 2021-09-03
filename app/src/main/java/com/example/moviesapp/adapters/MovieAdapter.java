@@ -1,6 +1,7 @@
 package com.example.moviesapp.adapters;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,7 +70,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     }
 
     public void getMovies() {
-        if(page >= limit) return; // Page should be within the limit
+        if (page >= limit) return; // Page should be within the limit
         String url = String.format("%s?api_key=%s&page=%d", NOW_PLAYING_URL, API_KEY, page);
         // Request a JSON object response from the API URL
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -103,7 +104,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     }
 
 
-
     // Inner view holder class - representation of row in recycler view
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView poster;
@@ -121,7 +121,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         public void bind(Movie movie) {
             title.setText(movie.getTitle());
             overview.setText(movie.getOverview());
-            Glide.with(context).load(movie.getPosterPath()).into(poster); // Load image URL into image view
+            // If phone is landscape, use backdrop path, else use poster path
+            String imageURL = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? movie.getBackdrop_path() : movie.getPosterPath();
+
+            Glide.with(context).load(imageURL).into(poster); // Load image URL into image view
         }
     }
 }
