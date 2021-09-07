@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
@@ -27,7 +25,6 @@ import com.example.moviesapp.models.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -37,6 +34,7 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
     public static final String TAG = "MovieAdapter"; // For debugging
     public static final String NOW_PLAYING_URL = "https://api.themoviedb.org/3/movie/popular";
+    private static final String MOVIE_URL = "https://api.themoviedb.org/3/movie";
     public static final String API_KEY = "04387a9831174fd21d2ca3db9bdd8ca6";
     private RequestQueue mQueue; // Request queue for API requests
     private int page = 1, limit = 1000; // Initially load page 1 of API response
@@ -79,11 +77,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         // Request a JSON object response from the API URL
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, response -> {
-                    Log.d(TAG, "onSuccess");
+                    Log.d(TAG, "onSuccess: getMovies");
                     try {
                         JSONArray results = response.getJSONArray("results"); // Get results array from JSON object
                         Log.i(TAG, "Results: " + results.toString());
-                        movies.addAll(Movie.fromJsonArray(results));
+                        movies.addAll(fromJsonArray(results));
                         notifyDataSetChanged(); // Whenever data changes, re-render view
                         Log.i(TAG, "Movies: " + movies.size());
                     } catch (JSONException e) {
@@ -91,7 +89,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                         e.printStackTrace();
                     }
                 }, error -> {
-                    Log.d(TAG, "onFailure");
+                    Log.d(TAG, "onFailure: getMovies");
                     Log.e(TAG, "Hit VolleyError exception", error);
                     error.printStackTrace();
                 });
@@ -99,41 +97,77 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         page++; // Increment page for next API call
     }
 
+    // Create a list of Movie objects from a JSON array
+    public List<Movie> fromJsonArray(JSONArray movieJsonArray) throws JSONException {
+        List<Movie> movies = new ArrayList<>(); // Initialize the return object
+        // Iterate through the JSON array and append a new Movie object for each entry
+        for (int i = 0; i < movieJsonArray.length(); i++) {
+            Movie movie = new Movie(movieJsonArray.getJSONObject(i));
+            movies.add(movie);
+            getMovieDetails(movie);
+        }
+        return movies; // Return a list of Movie objects containing API JSON data
+    }
 
-    // Inner view holder class - representation of row in recycler view
+    public void getMovieDetails(Movie movie) {
+        String url = String.format("%s/%d?api_key=%s", MOVIE_URL, movie.getId(), API_KEY);
+        // Request a JSON object response from the API URL
+        Log.d(TAG, "Fetching movie details");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, response -> {
+                    Log.d(TAG, "onSuccess: getMovieDetails");
+                    try {
+                        movie.setDetails(response); // Parse and set additional fields
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Hit JSON exception", e);
+                        e.printStackTrace();
+                    }
+                }, error -> {
+                    Log.d(TAG, "onFailure: getMovieDetails");
+                    Log.e(TAG, "Hit VolleyError exception", error);
+                    error.printStackTrace();
+                });
+        mQueue.add(jsonObjectRequest); // Add the API request to the RequestQueue
+    }
+
+    // ******************** Inner view holder class: Representation of a row in the recycler view ********************
     public class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout container; // The container for the whole row
         ImageView poster;
         TextView title;
-        TextView overview;
+        TextView rating;
         TextView year;
         TextView popularity;
-        TextView rating;
+        TextView genres;
+        TextView overview;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Import resources
+            // ***** Import resources *****
             container = itemView.findViewById(R.id.container);
             poster = itemView.findViewById(R.id.movie_poster);
             title = itemView.findViewById(R.id.movie_title);
-            overview = itemView.findViewById(R.id.movie_overview);
-            year = itemView.findViewById(R.id.movie_year);
-            popularity = itemView.findViewById(R.id.movie_popularity);
             rating = itemView.findViewById(R.id.movie_rating);
+            year = itemView.findViewById(R.id.detail_year);
+            popularity = itemView.findViewById(R.id.detail_popularity);
+            genres = itemView.findViewById(R.id.movie_genres);
+            overview = itemView.findViewById(R.id.movie_overview);
         }
 
+        // ********** Method to bind movie data to the view **********
         public void bind(Movie movie) {
             title.setText(movie.getTitle());
             overview.setText(movie.getOverview());
             year.setText(movie.getReleaseDate().substring(0, 4));
             popularity.setText("Popularity: " + movie.getPopularity());
             rating.setText(Double.toString(movie.getRating()));
-            // If phone is landscape, use backdrop path, else use poster path
-            String imageURL = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? movie.getBackdrop_path() : movie.getPosterPath();
+            genres.setText(movie.getGenres());
 
+            // *** If phone is landscape, use backdrop path, else use poster path ***
+            String imageURL = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? movie.getBackdrop_path() : movie.getPosterPath();
             Glide.with(context).load(imageURL).into(poster); // Load image URL into image view
 
-            // Set a click listener - do something when you click on the title
+            // ***** Set a click listener: Do something when you click on the row *****
             // 1. Register click listener on the whole row
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -144,7 +178,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                     context.startActivity(detailsActivity); // Start the activity
                 }
             });
-
         }
     }
 }

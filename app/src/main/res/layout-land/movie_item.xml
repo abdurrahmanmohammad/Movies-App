@@ -22,11 +22,23 @@
         android:textSize="28sp"
         tools:text="Jungle Cruise" />
 
+    <TextView
+        android:id="@+id/movie_genres"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/movie_title"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toEndOf="@+id/movie_poster"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="Genre1, Genre2, Genre3, Genre4" />
+
     <ImageView
         android:id="@+id/movie_star"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:layout_below="@+id/movie_title"
+        android:layout_below="@+id/movie_genres"
         android:layout_toEndOf="@+id/movie_poster"
         app:srcCompat="@android:drawable/btn_star_big_on" />
 
@@ -34,38 +46,38 @@
         android:id="@+id/movie_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/movie_title"
+        android:layout_below="@+id/movie_genres"
         android:layout_toEndOf="@+id/movie_star"
         tools:text="4.7" />
 
     <TextView
-        android:id="@+id/movie_year"
+        android:id="@+id/detail_year"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/movie_title"
+        android:layout_below="@+id/movie_genres"
         android:layout_marginStart="20dp"
         android:layout_toEndOf="@+id/movie_rating"
         android:text="Year" />
 
     <TextView
-        android:id="@+id/movie_popularity"
+        android:id="@+id/detail_popularity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/movie_title"
+        android:layout_below="@+id/movie_genres"
         android:layout_marginStart="20dp"
-        android:layout_toEndOf="@+id/movie_year"
+        android:layout_toEndOf="@+id/detail_year"
         android:text="Popularity" />
 
     <TextView
         android:id="@+id/movie_overview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/movie_year"
+        android:layout_below="@+id/detail_year"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/movie_poster"
         android:ellipsize="end"
-        android:maxLines="6"
+        android:maxLines="5"
         android:textSize="16sp"
         tools:text="Dr. Lily Houghton enlists the aid of wisecracking skipper Frank Wolff to take her down the Amazon in his dilapidated boat. Together, they search for an ancient tree that holds the power to heal – a discovery that will change the future of medicine." />
 </RelativeLayout>

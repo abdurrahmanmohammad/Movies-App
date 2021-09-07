@@ -22,18 +22,16 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 
 public class DetailActivity extends AppCompatActivity {
-
-    public static final String TAG = "DetailActivity"; // For debugging
-    public static final String MOVIE_URL = "https://api.themoviedb.org/3/movie";
-    public static final String API_KEY = "04387a9831174fd21d2ca3db9bdd8ca6";
-    private RequestQueue mQueue; // Request queue for API requests
-
-
-    TextView title;
-    TextView overview;
-    ImageView poster;
-    RatingBar ratingBar;
-
+    // Views
+    private TextView title;
+    private RatingBar ratingBar;
+    private TextView year;
+    private TextView runtime;
+    private TextView popularity;
+    private ImageView poster;
+    private TextView overview;
+    private TextView genres;
+    // Utils
     Movie movie;
 
 
@@ -42,50 +40,29 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        title = findViewById(R.id.detail_title);
-        overview = findViewById(R.id.detail_overview);
-        poster = findViewById(R.id.detail_poster);
-        ratingBar = findViewById(R.id.detail_ratingBar);
-
-        mQueue = Volley.newRequestQueue(this); // Instantiate the RequestQueue
-
+        // Initialize variables
         movie = Parcels.unwrap(getIntent().getParcelableExtra("movie")); // Retrieve movie from previous page
+
+        // Retrieve views
+        title = findViewById(R.id.detail_title);
+        ratingBar = findViewById(R.id.detail_ratingBar);
+        year = findViewById(R.id.detail_year);
+        runtime = findViewById(R.id.detail_runtime);
+        popularity = findViewById(R.id.detail_popularity);
+        poster = findViewById(R.id.detail_poster);
+        overview = findViewById(R.id.detail_overview);
+        genres = findViewById(R.id.detail_genres);
+
+        // Initialize views
         title.setText(movie.getTitle());
-        overview.setText(movie.getOverview());
-        Glide.with(this).load(movie.getBackdrop_path()).into(poster); // Load image URL into image view
         ratingBar.setRating((float) movie.getRating());
-        getDetails();
+        year.setText(movie.getReleaseDate().substring(0, 4));
+        runtime.setText(movie.getRuntime());
+        popularity.setText("Popularity: " + movie.getPopularity());
+        Glide.with(this).load(movie.getBackdrop_path()).into(poster); // Load image URL into image view
+        overview.setText(movie.getOverview());
+        genres.setText(movie.getGenres());
     }
 
-    public void getDetails() {
-        String url = String.format("%s/%d?api_key=%s", MOVIE_URL, movie.getId(), API_KEY);
-        // Request a JSON object response from the API URL
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, response -> {
-                    Log.d(TAG, "onSuccess");
-                    try {
-                        movie.setHomepage(response.getString("homepage"));
-                        movie.setRuntime(response.getInt("runtime"));
 
-                        JSONArray genres = response.getJSONArray("genres"); // Get results array from JSON object
-                        ArrayList<String> parsedGenres = new ArrayList<>();
-                        for(int i = 0; i < genres.length(); i++) {
-                            parsedGenres.add(genres.getJSONObject(i).getString("name"));
-                        }
-                        movie.setGenres(parsedGenres);
-
-                        Log.d(TAG, parsedGenres.toString());
-
-                    } catch (JSONException e) {
-                        Log.e(TAG, "Hit JSON exception", e);
-                        e.printStackTrace();
-                    }
-                }, error -> {
-                    Log.d(TAG, "onFailure");
-                    Log.e(TAG, "Hit VolleyError exception", error);
-                    error.printStackTrace();
-                });
-        mQueue.add(jsonObjectRequest); // Add the request to the RequestQueue
-
-    }
 }

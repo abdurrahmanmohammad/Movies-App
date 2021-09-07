@@ -10,8 +10,11 @@ import java.util.List;
 
 @Parcel
 public class Movie {
-    private String base_url = "https://image.tmdb.org/t/p";
-    private String size = "w342";
+    // Constants
+    private static final String base_url = "https://image.tmdb.org/t/p";
+    private static final String size = "w342";
+
+    //
     private String posterPath;
     private String backdropPath;
     private String title;
@@ -21,9 +24,9 @@ public class Movie {
     private int id;
     private String popularity;
     private String releaseDate;
-    private int runtime;
+    private String runtime;
     private String homepage;
-    private List<String> genres = new ArrayList<>();
+    private String genres;
 
 
     // empty constructor needed by the Parceler library
@@ -47,18 +50,23 @@ public class Movie {
         // Do call for movie and call for genres
     }
 
-    // Create a list of Movie objects from a JSON array
-    public static List<Movie> fromJsonArray(JSONArray movieJsonArray) throws JSONException {
-        List<Movie> movies = new ArrayList<>(); // Initialize the return object
-        // Iterate throught the JSON array and append a new Movie object for each entry
-        for (int i = 0; i < movieJsonArray.length(); i++)
-            movies.add(new Movie(movieJsonArray.getJSONObject(i)));
-        return movies; // Return a list of Movie objects containing API JSON data
+
+    public void setDetails(JSONObject jsonObject) throws JSONException {
+        // Parse fields
+        int runtimeInt = jsonObject.getInt("runtime");
+        runtime = String.format("%dh %dm", runtimeInt / 60, runtimeInt % 60);
+        homepage = jsonObject.getString("homepage");
+        // Parse genres
+        JSONArray JsonGenres = jsonObject.getJSONArray("genres"); // Get results array from JSON object
+
+        genres = JsonGenres.getJSONObject(0).getString("name");
+        for (int i = 1; i < JsonGenres.length(); i++)
+            genres += ", " + JsonGenres.getJSONObject(i).getString("name");
     }
 
     // ******************** Getters ********************
 
-    public List<String> getGenres() {
+    public String getGenres() {
         return genres;
     }
 
@@ -90,7 +98,7 @@ public class Movie {
         return releaseDate;
     }
 
-    public int getRuntime() {
+    public String getRuntime() {
         return runtime;
     }
 
@@ -100,19 +108,5 @@ public class Movie {
 
     public double getRating() {
         return rating;
-    }
-
-    // ******************** Setters ********************
-
-    public void setGenres(List<String> genres) {
-        this.genres = genres;
-    }
-
-    public void setRuntime(int runtime) {
-        this.runtime = runtime;
-    }
-
-    public void setHomepage(String homepage) {
-        this.homepage = homepage;
     }
 }
