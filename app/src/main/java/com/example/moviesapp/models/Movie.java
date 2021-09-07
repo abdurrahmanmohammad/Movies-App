@@ -3,25 +3,48 @@ package com.example.moviesapp.models;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Parcel
 public class Movie {
     private String base_url = "https://image.tmdb.org/t/p";
     private String size = "w342";
-    private String poster_path;
-    private String backdrop_path;
+    private String posterPath;
+    private String backdropPath;
     private String title;
     private String overview;
+    private double rating;
+
+    private int id;
+    private String popularity;
+    private String releaseDate;
+    private int runtime;
+    private String homepage;
+    private List<String> genres = new ArrayList<>();
+
+
+    // empty constructor needed by the Parceler library
+    public Movie() {
+    }
 
     public Movie(JSONObject jsonObject) throws JSONException {
         // Set variables from passed in objects
         // If fields do not exist in JSON object, throw an exception - caller should deal with the thrown exception
-        poster_path = String.format("%s/%s/%s", base_url, size, jsonObject.getString("poster_path"));
-        backdrop_path = String.format("%s/%s/%s", base_url, size, jsonObject.getString("backdrop_path"));
+        posterPath = String.format("%s/%s/%s", base_url, size, jsonObject.getString("poster_path"));
+        backdropPath = String.format("%s/%s/%s", base_url, size, jsonObject.getString("backdrop_path"));
         title = jsonObject.getString("title");
         overview = jsonObject.getString("overview");
+        popularity = jsonObject.getString("popularity");
+        releaseDate = jsonObject.getString("release_date");
+        rating = jsonObject.getDouble("vote_average");
+        id = jsonObject.getInt("id");
+
+        // Pass in ID
+        // Do API call and populate fields
+        // Do call for movie and call for genres
     }
 
     // Create a list of Movie objects from a JSON array
@@ -34,12 +57,21 @@ public class Movie {
     }
 
     // ******************** Getters ********************
+
+    public List<String> getGenres() {
+        return genres;
+    }
+
     public String getPosterPath() {
-        return poster_path;
+        return posterPath;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getBackdrop_path() {
-        return backdrop_path;
+        return backdropPath;
     }
 
     public String getTitle() {
@@ -48,5 +80,39 @@ public class Movie {
 
     public String getOverview() {
         return overview;
+    }
+
+    public String getPopularity() {
+        return popularity;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public int getRuntime() {
+        return runtime;
+    }
+
+    public String getHomepage() {
+        return homepage;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    // ******************** Setters ********************
+
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime = runtime;
+    }
+
+    public void setHomepage(String homepage) {
+        this.homepage = homepage;
     }
 }

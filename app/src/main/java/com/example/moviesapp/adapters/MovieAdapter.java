@@ -1,12 +1,14 @@
 package com.example.moviesapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,12 +21,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.example.moviesapp.DetailActivity;
 import com.example.moviesapp.R;
 import com.example.moviesapp.models.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,31 +78,23 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         String url = String.format("%s?api_key=%s&page=%d", NOW_PLAYING_URL, API_KEY, page);
         // Request a JSON object response from the API URL
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "onSuccess");
-                        try {
-                            JSONArray results = response.getJSONArray("results"); // Get results array from JSON object
-                            Log.i(TAG, "Results: " + results.toString());
-                            movies.addAll(Movie.fromJsonArray(results));
-                            notifyDataSetChanged(); // Whenever data changes, re-render view
-                            Log.i(TAG, "Movies: " + movies.size());
-                        } catch (JSONException e) {
-                            Log.e(TAG, "Hit JSON exception", e);
-                            e.printStackTrace();
-                        }
+                (Request.Method.GET, url, null, response -> {
+                    Log.d(TAG, "onSuccess");
+                    try {
+                        JSONArray results = response.getJSONArray("results"); // Get results array from JSON object
+                        Log.i(TAG, "Results: " + results.toString());
+                        movies.addAll(Movie.fromJsonArray(results));
+                        notifyDataSetChanged(); // Whenever data changes, re-render view
+                        Log.i(TAG, "Movies: " + movies.size());
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Hit JSON exception", e);
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, "onFailure");
-                        Log.e(TAG, "Hit VolleyError exception", error);
-                        error.printStackTrace();
-                    }
+                }, error -> {
+                    Log.d(TAG, "onFailure");
+                    Log.e(TAG, "Hit VolleyError exception", error);
+                    error.printStackTrace();
                 });
-
-
         mQueue.add(jsonObjectRequest); // Add the request to the RequestQueue
         page++; // Increment page for next API call
     }
@@ -106,25 +102,49 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     // Inner view holder class - representation of row in recycler view
     public class ViewHolder extends RecyclerView.ViewHolder {
+        RelativeLayout container; // The container for the whole row
         ImageView poster;
         TextView title;
         TextView overview;
+        TextView year;
+        TextView popularity;
+        TextView rating;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             // Import resources
+            container = itemView.findViewById(R.id.container);
             poster = itemView.findViewById(R.id.movie_poster);
             title = itemView.findViewById(R.id.movie_title);
             overview = itemView.findViewById(R.id.movie_overview);
+            year = itemView.findViewById(R.id.movie_year);
+            popularity = itemView.findViewById(R.id.movie_popularity);
+            rating = itemView.findViewById(R.id.movie_rating);
         }
 
         public void bind(Movie movie) {
             title.setText(movie.getTitle());
             overview.setText(movie.getOverview());
+            year.setText(movie.getReleaseDate().substring(0, 4));
+            popularity.setText("Popularity: " + movie.getPopularity());
+            rating.setText(Double.toString(movie.getRating()));
             // If phone is landscape, use backdrop path, else use poster path
             String imageURL = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? movie.getBackdrop_path() : movie.getPosterPath();
 
             Glide.with(context).load(imageURL).into(poster); // Load image URL into image view
+
+            // Set a click listener - do something when you click on the title
+            // 1. Register click listener on the whole row
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 2. Navigate to a new activity on tap
+                    Intent detailsActivity = new Intent(context, DetailActivity.class); // Create a new intent
+                    detailsActivity.putExtra("movie", Parcels.wrap(movie)); // Pass in title
+                    context.startActivity(detailsActivity); // Start the activity
+                }
+            });
+
         }
     }
 }
