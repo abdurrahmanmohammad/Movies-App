@@ -22,19 +22,19 @@ The assignment is to build a mobile app to help people discover the most popular
 
 ### Architecture - MVVM
 * Model
- * Movie model stores movie data retrieved from API
- * Contains logic to parse JSON and store data
- * Contains getter methods to access stored data
+  * Movie model stores movie data retrieved from API
+  * Contains logic to parse JSON and store data
+  * Contains getter methods to access stored data
 * View
- * Displays movie data on screen
- * MainActivity displays a RecyclerView in activity_main view with rows (movie_item) displaying movie data
- * DetailActivity displays additional specific movie information in activity_detail view
+  * Displays movie data on screen
+  * MainActivity displays a RecyclerView in activity_main view with rows (movie_item) displaying movie data
+  * DetailActivity displays additional specific movie information in activity_detail view
 * View-Model
- * Connects the model to the UI - act as bridges between UI views and Movie model
- * MainActivity encapsulates the activity_main view which contains a RecyclerView and loads more data in RecyclerView when you are reaching the end
- * MovieDetails encapsulates the activity_detail view and fills it with data from a particular Movie object
- * MovieAdapter contains a view-model for a row view (movie_item), inflates rows into the RecyclerView, and manages row data in the view
- * MovieAdapter instantiates, manages, and manipulates a list of Movie objects and does API calls to get movie data
+  * Connects the model to the UI - act as bridges between UI views and Movie model
+  * MainActivity encapsulates the activity_main view which contains a RecyclerView and loads more data in RecyclerView when you are reaching the end
+  * MovieDetails encapsulates the activity_detail view and fills it with data from a particular Movie object
+  * MovieAdapter contains a view-model for a row view (movie_item), inflates rows into the RecyclerView, and manages row data in the view
+  * MovieAdapter instantiates, manages, and manipulates a list of Movie objects and does API calls to get movie data
 
 ## Third-party Libraries
 * Volley
