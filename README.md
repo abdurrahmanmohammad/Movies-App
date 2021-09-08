@@ -4,9 +4,9 @@ The assignment is to build a mobile app to help people discover the most popular
 
 ## User Stories
 
-[x] Scroll through the list of the current most popular movies. Each movie in Me list should display, if vailable: thumbnail, title, popularity score and release year. List should not be limited to show only the first 20 movies as returned by the API.
-[x] The movie details page should display all of the fields mentioned above and if available: overview. runtime and a link to the movie homepage.
-[x] The genre's name should be present on both screens (Home and Details screen).
+* [x] Scroll through the list of the current most popular movies. Each movie in Me list should display, if vailable: thumbnail, title, popularity score and release year. List should not be limited to show only the first 20 movies as returned by the API.
+* [x] The movie details page should display all of the fields mentioned above and if available: overview. runtime and a link to the movie homepage.
+* [x] The genre's name should be present on both screens (Home and Details screen).
 
 ## Instructions required to build and run the app in an emulator
 1. Download Android Studio and [set up emulator](https://developer.android.com/studio/run/emulator)
