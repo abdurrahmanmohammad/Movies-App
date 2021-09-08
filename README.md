@@ -35,4 +35,4 @@ The assignment is to build a mobile app to help people discover the most popular
 
 ## Video Walkthrough
 
-<img src='https://github.com/abdurrahmanmohammad/Movies-App/blob/main/walkthrough.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://imgur.com/fmexa05' title='Video Walkthrough' width='' alt='Video Walkthrough' />
