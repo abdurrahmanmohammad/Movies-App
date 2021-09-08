@@ -14,13 +14,13 @@ The assignment is to build a mobile app to help people discover the most popular
 1. Run the project in Android Studio
 
 ## Design Choices and Architecture
-# Design Choices
+### Design Choices
 * Utilized a RecyclerView over ListView to save memory space and speed up row inflation
 * Utilized RelativeLayout for rows to order tiems relative to each other and to achieve a particular look on different display sizes
 * Utilized a LinearLayout for movie details page to stack components linearly
 * Utilized a ScrollView on the moview details page so user can see data which may extend exceed the screen size
 
-# Architecture - MVVM
+### Architecture - MVVM
 * Model
  * Movie model stores movie data retrieved from API
  * Contains logic to parse JSON and store data
