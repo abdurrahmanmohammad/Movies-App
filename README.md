@@ -14,6 +14,27 @@ The assignment is to build a mobile app to help people discover the most popular
 1. Run the project in Android Studio
 
 ## Design Choices and Architecture
+# Design Choices
+* Utilized a RecyclerView over ListView to save memory space and speed up row inflation
+* Utilized RelativeLayout for rows to order tiems relative to each other and to achieve a particular look on different display sizes
+* Utilized a LinearLayout for movie details page to stack components linearly
+* Utilized a ScrollView on the moview details page so user can see data which may extend exceed the screen size
+
+# Architecture - MVVM
+* Model
+ * Movie model stores movie data retrieved from API
+ * Contains logic to parse JSON and store data
+ * Contains getter methods to access stored data
+* View
+ * Displays movie data on screen
+ * MainActivity displays a RecyclerView in activity_main view with rows (movie_item) displaying movie data
+ * DetailActivity displays additional specific movie information in activity_detail view
+* View-Model
+ * Connects the model to the UI - act as bridges between UI views and Movie model
+ * MainActivity encapsulates the activity_main view which contains a RecyclerView and loads more data in RecyclerView when you are reaching the end
+ * MovieDetails encapsulates the activity_detail view and fills it with data from a particular Movie object
+ * MovieAdapter contains a view-model for a row view (movie_item), inflates rows into the RecyclerView, and manages row data in the view
+ * MovieAdapter instantiates, manages, and manipulates a list of Movie objects and does API calls to get movie data
 
 ## Third-party Libraries
 * Volley
