@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 import com.example.moviesapp.adapters.MovieAdapter;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TAG = "MainActivity"; // For debugging
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

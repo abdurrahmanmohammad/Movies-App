@@ -5,36 +5,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Parcel
 public class Movie {
     // Constants
-    private static final String base_url = "https://image.tmdb.org/t/p";
-    private static final String size = "w342";
-
-    //
-    private String posterPath;
-    private String backdropPath;
-    private String title;
-    private String overview;
+    private static final String base_url = "https://image.tmdb.org/t/p", size = "w342";
+    // Instance variables
+    private String posterPath, backdropPath, title, overview, popularity, releaseDate, runtime, homepage, genres;
     private double rating;
-
     private int id;
-    private String popularity;
-    private String releaseDate;
-    private String runtime;
-    private String homepage;
-    private String genres;
 
 
-    // empty constructor needed by the Parceler library
+    // Empty constructor needed by the Parceler library
     public Movie() {
     }
 
     public Movie(JSONObject jsonObject) throws JSONException {
-        // Set variables from passed in objects
+        // Set variables from passed in object
         // If fields do not exist in JSON object, throw an exception - caller should deal with the thrown exception
         posterPath = String.format("%s/%s/%s", base_url, size, jsonObject.getString("poster_path"));
         backdropPath = String.format("%s/%s/%s", base_url, size, jsonObject.getString("backdrop_path"));
@@ -44,10 +30,6 @@ public class Movie {
         releaseDate = jsonObject.getString("release_date");
         rating = jsonObject.getDouble("vote_average");
         id = jsonObject.getInt("id");
-
-        // Pass in ID
-        // Do API call and populate fields
-        // Do call for movie and call for genres
     }
 
 
@@ -57,15 +39,13 @@ public class Movie {
         runtime = String.format("%dh %dm", runtimeInt / 60, runtimeInt % 60);
         homepage = jsonObject.getString("homepage");
         // Parse genres
-        JSONArray JsonGenres = jsonObject.getJSONArray("genres"); // Get results array from JSON object
-
+        JSONArray JsonGenres = jsonObject.getJSONArray("genres"); // Get genres array from JSON object
         genres = JsonGenres.getJSONObject(0).getString("name");
         for (int i = 1; i < JsonGenres.length(); i++)
             genres += ", " + JsonGenres.getJSONObject(i).getString("name");
     }
 
     // ******************** Getters ********************
-
     public String getGenres() {
         return genres;
     }

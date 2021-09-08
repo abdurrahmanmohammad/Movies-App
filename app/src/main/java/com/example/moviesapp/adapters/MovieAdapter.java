@@ -32,16 +32,19 @@ import java.util.List;
 
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
-    public static final String TAG = "MovieAdapter"; // For debugging
-    public static final String NOW_PLAYING_URL = "https://api.themoviedb.org/3/movie/popular";
+    // Constants
+    private static final String TAG = "MovieAdapter"; // For debugging
+    private static final String NOW_PLAYING_URL = "https://api.themoviedb.org/3/movie/popular";
     private static final String MOVIE_URL = "https://api.themoviedb.org/3/movie";
-    public static final String API_KEY = "04387a9831174fd21d2ca3db9bdd8ca6";
-    private RequestQueue mQueue; // Request queue for API requests
-    private int page = 1, limit = 1000; // Initially load page 1 of API response
+    private static final String API_KEY = "04387a9831174fd21d2ca3db9bdd8ca6";
+    private static final int LIMIT = 1000; // The maximum page number is 1000
+    // Variables
+    private Context context; // Context to inflate the views - where the adapter is being constructed from
+    private List<Movie> movies = new ArrayList<>(); // List of movies the adapter needs to hold on to
+    private static RequestQueue mQueue; // Request queue for API requests
+    private int page = 1; // Initially load page 1 of API response
 
-    Context context; // Context to inflate the views - where the adapter is being constructed from
-    List<Movie> movies = new ArrayList<>(); // List of movies the adapter needs to hold on to
-
+    // Constructor
     public MovieAdapter(Context context) {
         this.context = context;
         mQueue = Volley.newRequestQueue(context); // Instantiate the RequestQueue
@@ -71,8 +74,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return movies.size(); // The number of items is the number of movies in the list
     }
 
+    // Populate movies list: Append 20 movies to list on each call
     public void getMovies() {
-        if (page >= limit) return; // Page should be within the limit
+        if (page >= LIMIT) return; // Page should be within the limit
         String url = String.format("%s?api_key=%s&page=%d", NOW_PLAYING_URL, API_KEY, page);
         // Request a JSON object response from the API URL
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -103,21 +107,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         // Iterate through the JSON array and append a new Movie object for each entry
         for (int i = 0; i < movieJsonArray.length(); i++) {
             Movie movie = new Movie(movieJsonArray.getJSONObject(i));
-            movies.add(movie);
-            getMovieDetails(movie);
+            movies.add(movie); // Add the movie to movies array
+            getMovieDetails(movie); // Fill in additional details: genres, homepage, runtime
         }
-        return movies; // Return a list of Movie objects containing API JSON data
+        return movies; // Return a list of Movie objects containing parsed API JSON data
     }
 
+    // Get additional details for a movie and modify it
     public void getMovieDetails(Movie movie) {
         String url = String.format("%s/%d?api_key=%s", MOVIE_URL, movie.getId(), API_KEY);
-        // Request a JSON object response from the API URL
         Log.d(TAG, "Fetching movie details");
+        // Request a JSON object response from the API URL
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, response -> {
                     Log.d(TAG, "onSuccess: getMovieDetails");
                     try {
-                        movie.setDetails(response); // Parse and set additional fields
+                        movie.setDetails(response); // Parse and set additional movie fields
                     } catch (JSONException e) {
                         Log.e(TAG, "Hit JSON exception", e);
                         e.printStackTrace();
@@ -130,20 +135,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         mQueue.add(jsonObjectRequest); // Add the API request to the RequestQueue
     }
 
-    // ******************** Inner view holder class: Representation of a row in the recycler view ********************
+    // Inner view holder class: Representation of a row in the recycler view
     public class ViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout container; // The container for the whole row
-        ImageView poster;
-        TextView title;
-        TextView rating;
-        TextView year;
-        TextView popularity;
-        TextView genres;
-        TextView overview;
+        RelativeLayout container; // The RelativeLayout container that contains all the row items
+        ImageView poster; // Movie poster field in row
+        TextView title, rating, year, popularity, genres, overview; // TextView fields in row
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            // ***** Import resources *****
+            // Import resources
             container = itemView.findViewById(R.id.container);
             poster = itemView.findViewById(R.id.movie_poster);
             title = itemView.findViewById(R.id.movie_title);
@@ -154,20 +154,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             overview = itemView.findViewById(R.id.movie_overview);
         }
 
-        // ********** Method to bind movie data to the view **********
+        // Method to bind movie data to the view
         public void bind(Movie movie) {
             title.setText(movie.getTitle());
             overview.setText(movie.getOverview());
             year.setText(movie.getReleaseDate().substring(0, 4));
-            popularity.setText("Popularity: " + movie.getPopularity());
+            popularity.setText(String.format("Popularity: %s", movie.getPopularity()));
             rating.setText(Double.toString(movie.getRating()));
             genres.setText(movie.getGenres());
 
-            // *** If phone is landscape, use backdrop path, else use poster path ***
+            // If phone is landscape, use backdrop path, else use poster path
             String imageURL = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? movie.getBackdrop_path() : movie.getPosterPath();
             Glide.with(context).load(imageURL).into(poster); // Load image URL into image view
 
-            // ***** Set a click listener: Do something when you click on the row *****
+            // Set a click listener: Do something when you click on the row
             // 1. Register click listener on the whole row
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
