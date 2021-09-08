@@ -1,92 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".DetailActivity">
-
-    <TextView
-        android:id="@+id/detail_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:textSize="34sp"
-        tools:text="Jungle Cruise" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/detail_year"
+            android:id="@+id/detail_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:textSize="34sp"
+            tools:text="Jungle Cruise" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/detail_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                tools:text="Year" />
+
+            <TextView
+                android:id="@+id/detail_runtime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:text="-h -m"
+                tools:text="2h 47m" />
+
+            <TextView
+                android:id="@+id/detail_popularity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                tools:text="Popularity: 123.456" />
+
+            <Button
+                android:id="@+id/detail_homepage"
+                style="@style/Widget.AppCompat.Button.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:layout_marginStart="15dp"
+                android:text="Homepage"
+                android:textAlignment="center"
+                android:textSize="12dp" />
+
+        </LinearLayout>
+
+        <RatingBar
+            android:id="@+id/detail_ratingBar"
+            style="@style/Widget.AppCompat.RatingBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            tools:text="Year" />
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
+            android:numStars="10"
+            android:rating="8.5" />
 
         <TextView
-            android:id="@+id/detail_runtime"
+            android:id="@+id/detail_genres"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:text="-h -m"
-            tools:text="2h 47m" />
+            android:layout_marginStart="5dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="Genre1, Genre2, Genre3, Genre4" />
+
+        <ImageView
+            android:id="@+id/detail_poster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            tools:srcCompat="@tools:sample/avatars" />
+
 
         <TextView
-            android:id="@+id/detail_popularity"
-            android:layout_width="wrap_content"
+            android:id="@+id/detail_overview_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            tools:text="Popularity: 123.456" />
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:text="Overview"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/detail_homepage"
-            android:layout_width="wrap_content"
+            android:id="@+id/detail_overview"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="Homepage" />
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:textSize="16dp"
+            tools:text="Dr. Lily Houghton enlists the aid of wisecracking skipper Frank Wolff to take her down the Amazon in his dilapidated boat. Together, they search for an ancient tree that holds the power to heal – a discovery that will change the future of medicine." />
+
+
     </LinearLayout>
-
-    <RatingBar
-        android:id="@+id/detail_ratingBar"
-        style="@style/Widget.AppCompat.RatingBar.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:numStars="10"
-        android:rating="8.5"
-        android:layout_marginBottom="5dp"/>
-
-    <TextView
-        android:id="@+id/detail_genres"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        tools:text="Genre1, Genre2, Genre3, Genre4" />
-
-
-    <ImageView
-        android:id="@+id/detail_poster"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        tools:srcCompat="@tools:sample/avatars" />
-
-
-    <TextView
-        android:id="@+id/detail_overview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:textSize="16dp"
-        tools:text="Dr. Lily Houghton enlists the aid of wisecracking skipper Frank Wolff to take her down the Amazon in his dilapidated boat. Together, they search for an ancient tree that holds the power to heal – a discovery that will change the future of medicine." />
-</LinearLayout>
+</ScrollView>
